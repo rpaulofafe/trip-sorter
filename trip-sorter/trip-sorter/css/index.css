@@ -1,0 +1,75 @@
+/* Form that holds the city selection and search button */
+.container {
+	background-color: #f7f7f7;
+}
+
+/* Error messages */
+.errorMessages {
+	color: #a94442;
+	padding: 0.5em;
+}
+
+
+/* Results container */
+.results {
+	text-align: center;
+	margin: 1em;
+}
+
+
+.tripSorterType .control-label{
+	margin: 16px 16px 30px 16px;
+}
+
+.results ul{
+	max-width: 40em;
+	margin: auto;
+}
+
+/* Itinerary result entry */
+.cityItineraryPicture {
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+.itineraryInfo button.btn-info {
+	padding: 1px 2px 1px 2px !important;
+	margin: 2px;
+} 
+
+.itineraryInfo ul {
+    border: 1px solid #ddd;
+    border-radius: 1px;
+}
+
+
+.itineraryInfo li {
+	border: none;
+	padding: 4px 10px;
+	background-color: #fafafa;
+}
+
+.cityItineraryValue, .priceValueTotal, .modalLabel {
+	display: inline-block;
+  	min-width: 80px;
+}
+
+.itineraryTotal ul li {
+	background-color: #ddd;
+	border-top-left-radius: 0px !important;
+	border-top-right-radius: 0px !important;
+}
+.priceValue, .cityItineraryValue, .modalPriceDetails {
+	font-weight: bold;
+}
+
+/* Modal price details  */
+.modal-body li {
+	border: none !important; 
+	padding: 4px 10px;
+}
+
+/** Prevent invisible angular stuff to appear before the page loads **/
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}

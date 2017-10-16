@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>TripSorter - ricardo.paulo.fafe@gmail.com</title>
+	
+	<!-- Styles -->
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+
+<body>
+	<div class="container" data-ng-controller="tripSorterController">
+		<h1>TripSorter</h1> 
+		
+		<!-- Form to introduce cities -->
+		<form class="form-horizontal property-finder-form" name='citiesForm'>
+			
+			<!-- From City -->
+			<div class="form-group">
+				<label class="control-label col-sm-offset-2 col-sm-2 col-md-offset-3" for="fromCity">From:</label>
+				<div class="col-sm-6 col-md-4">
+					<select id="fromCity" name="fromCity" class="form-control" data-ng-model="fromCity"  
+						data-ng-options="city for city in availableCities | orderBy" 
+						data-ng-change="searchPath()" data-required data-target-city-different>
+					</select>	
+				</div>
+			</div>
+			
+			<!-- To City -->
+			<div class="form-group">
+				<label class="control-label col-sm-offset-2 col-sm-2 col-md-offset-3" for="toCity">To:</label>
+				<div class="col-sm-6 col-md-4">
+					<select id="toCity" name="toCity" class="form-control"  data-ng-model="toCity" 
+						data-ng-options="city for city in availableCities | orderBy" 
+						data-ng-change="searchPath()" data-required data-target-city-different>
+					</select>	
+					<div class="errorMessages" data-ng-show='citiesForm.toCity.$error.targetCityDifferent' data-ng-cloak>
+						<span>The departure and  arrival cannot be the same.</span>
+  					</div>
+				</div>
+			</div>
+			<!-- Option Cheapest/Fastest -->
+			<div class="form-group">
+				<label class="control-label col-sm-offset-2 col-sm-2 col-md-offset-3" for="toCity">Itinerary:</label>
+				<div class="col-sm-6 col-md-4">
+					<label class="radio-inline">
+			      	<input type="radio" name="optradioCheapest" data-ng-model="fastest" value="no" data-ng-change="searchPath()"> Cheapest
+			    </label>
+			    <label class="radio-inline">
+			       <input type="radio" name="optradioFastest" data-ng-model="fastest" value="yes" data-ng-change="searchPath()"> Fastest
+			    </label>
+				</div>
+			</div>
+		</form>
+		
+		<!-- Display Results -->
+		<div class="results" data-ng-show="pathInfo && pathInfo.path.length > 0" data-ng-cloak>
+			<!-- Itinerary (city by city) -->
+			<div class="itineraryInfo" data-ng-repeat="itinerary in pathInfo.path" data-ng-cloak>
+				<ul class="list-group">
+					<li class="list-group-item">
+						<span class="cityItineraryValue">{{itinerary.departure}}</span>
+						<i class="cityItineraryPicture fa fa-{{itinerary.transport}}"></i> 
+						<span class="cityItineraryValue">{{itinerary.arrival}}</span></li>
+					<li class="list-group-item"><span class="transportTypeValue">{{itinerary.transport}}</span>
+						<span class="transportReferenceValue">{{itinerary.reference}}</span>
+						for <span class="transportTimeValue">{{itinerary.duration.h}}h{{itinerary.duration.m}}m</span>
+					</li>
+					<li class="list-group-item">
+						<span class="priceValue">{{itinerary.finalPrice | currency : currency}}</span>
+						<button type="button" class="btn btn-info fa fa-info-circle" 
+							data-ng-click="showModal(itinerary)" data-toggle="modal" data-target="#modalPriceDetails"></button> 
+					</li>
+				</ul>
+			</div>
+			
+			<!-- Itinerary (total) -->
+			<div class="itineraryTotal">
+				<ul class="list-group">
+					<li class="list-group-item">
+						<span class="priceValue priceValueTotal">Total</span>
+						<span class="transportTimeValue">{{pathInfo.duration.h}}h{{pathInfo.duration.m}}m</span>
+						<span class="priceValue priceValueTotal">{{pathInfo.totalPrice | currency : currency}}</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<!-- Error Message when no result Found -->
+		<div class="results errorMessages" data-ng-show='citiesForm.$valid && pathInfo && pathInfo.path.length < 1' data-ng-cloak>
+			<span>Unfortunately there is no result found to the given data</span>
+  		</div>
+
+		<!-- Modal price details (when info button pressed) -->
+		<div class="modal fade" id="modalPriceDetails" role="dialog">
+		    <div class="modal-dialog">
+		      <!-- Modal content-->
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal">&times;</button>
+		          <div class="modal-title modalPriceDetails">
+		          		<span>{{selectedPriceInfo.departure}}</span>
+						<i class="cityItineraryPicture fa fa-{{selectedPriceInfo.transport}}"></i> 
+						<span>{{selectedPriceInfo.arrival}}</span>
+		          </div>
+		        </div>
+		        <div class="modal-body">
+		         <ul class="list-group">
+					<li class="list-group-item">
+						<span class="modalLabel">Cost:</span>
+						<span class="priceValueDiscount">&nbsp;&nbsp;{{selectedPriceInfo.cost | currency : currency}}</span>
+					</li>
+					<li class="list-group-item">
+						<span class="modalLabel">Discount:</span>
+						<span class="priceValueDiscount">- 
+							{{selectedPriceInfo.discountCost | currency : currency}} ({{selectedPriceInfo.discount | number :1}}%)
+						</span>
+					</li>
+					<li class="list-group-item">
+						<span class="modalLabel">Final Price:</span>
+						<span class="priceValue">&nbsp;&nbsp;{{selectedPriceInfo.finalPrice | currency : currency}}</span>
+					</li>
+				</ul>
+		        </div>
+		      </div>      
+		    </div>
+		</div>
+	</div>
+
+	<!-- Load App Dependencies -->
+	<script data-main="js/app-init.js" src="js/ext-lib/require.js"></script>
+</body>
+</html>
